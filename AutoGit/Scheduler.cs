@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq.Expressions;
+using AutoGit.Contracts;
 using Hangfire;
 using Hangfire.MemoryStorage;
 
 namespace AutoGit
 {
-    public class Scheduler : IDisposable
+    public class Scheduler : IDisposable, IScheduler
     {
         private readonly BackgroundJobServer _server;
 

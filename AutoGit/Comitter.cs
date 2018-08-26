@@ -1,4 +1,5 @@
 ﻿using System;
+using AutoGit.Contracts;
 using LibGit2Sharp;
 
 namespace AutoGit
@@ -27,7 +28,7 @@ namespace AutoGit
         }
     }
 
-    public class Comitter
+    public class Comitter : IComitter
     {
         private readonly GitRepositorySettings _repositorySettings;
 
