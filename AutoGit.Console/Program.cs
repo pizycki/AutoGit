@@ -1,27 +1,31 @@
-﻿using Hangfire;
-using Hangfire.MemoryStorage;
+﻿using static System.Console;
 
 namespace AutoGit.Console
 {
-    using System;
-
     class Program
     {
         static void Main(string[] args)
         {
-            GlobalConfiguration.Configuration.UseMemoryStorage();
+            //using (var scheduler = Scheduler.Create())
+            //{
+            //    scheduler.AddCronJob(() => SayHi(), Cron.Minutely);
 
-            using (var server = new BackgroundJobServer())
-            {
-                RecurringJob.AddOrUpdate(
-                    methodCall: () => SayHi(),
-                    cronExpression: Cron.Minutely);
+            //    ShowPrompt();
+            //}
 
-                Console.WriteLine("Hangfire Server started. Press any key to exit...");
-                Console.ReadKey();
-            }
+            var repoSettings = new GitRepositorySettings("E:\\dev\\gitauto-test-repo", new GitUser("LeMua", "le.mua@domain.com"));
+            var comitter = new Comitter(repoSettings);
+            comitter.CommitChanges();
+
         }
 
-        public static void SayHi() => Console.WriteLine("Hi!");
+        private static void ShowPrompt()
+        {
+            WriteLine("HangFire has started!");
+            WriteLine("Press any key to exit.");
+            ReadKey();
+        }
+
+        public static void SayHi() => WriteLine("Hi!");
     }
 }

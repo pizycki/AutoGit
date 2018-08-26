@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Hangfire.MemoryStorage.Core" Version="1.4.0" />
+    <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
   </ItemGroup>
 
 </Project>
