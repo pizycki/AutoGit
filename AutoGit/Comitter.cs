@@ -45,7 +45,6 @@ namespace AutoGit
                 var message = CreateMessage();
                 var signature = CreateSignature();
                 repo.Commit(message, signature, signature);
-
             }
         }
 

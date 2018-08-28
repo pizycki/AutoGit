@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "AutoGit.Console": {
+      "commandName": "Project",
+      "commandLineArgs": "start -s E:\\dev\\gitauto-test-repo"
+    }
+  }
+}
