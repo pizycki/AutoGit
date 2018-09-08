@@ -13,6 +13,11 @@ namespace AutoGit.Console
             public const int Failure = 1;
         }
 
+        static class Crons
+        {
+            public static Func<string> Every2Mins = () => "*/2 * * * *";
+        }
+
         static void Main(string[] args)
         {
             var cmdLineApp = new CommandLineApplication();
@@ -22,20 +27,41 @@ namespace AutoGit.Console
                 var sourceOpt = cmd.Option("-s | --src",
                                            "Path to directory Git repository root",
                                            CommandOptionType.SingleValue);
+
+                var userNameOpt = cmd.Option("-un | --username",
+                                             "Name of author which will pasted into commit.",
+                                             CommandOptionType.SingleValue);
+
+                var userEmailOpt = cmd.Option("-ue | --email",
+                                              "Author email",
+                                              CommandOptionType.SingleValue);
+
                 Func<int> fun = () =>
                 {
-                    if (sourceOpt.HasValue() == false)
+                    if (!sourceOpt.HasValue())
                     {
                         cmd.Error.WriteLine("Path to repository is required.");
                         return ExitCodes.Failure;
                     }
 
-                    var author = new GitUser("Paweł Iżycki", "pawelizycki@gmail.com");
+                    // TODO figure out how to retrieve user from .gitconfig
+                    if (!userNameOpt.HasValue())
+                    {
+                        cmd.Error.WriteLine("Username is required.");
+                    }
+
+                    if (!userEmailOpt.HasValue())
+                    {
+                        cmd.Error.WriteLine("Username is required.");
+                    }
+
+                    var author = new GitUser(userNameOpt.Value(), userEmailOpt.Value());
                     var repository = new GitRepositorySettings(sourceOpt.Value(), author);
                     var comitter = new Comitter(repository);
                     using (var scheduler = Scheduler.Create())
                     {
                         scheduler.AddCronJob(() => comitter.CommitChanges(), Cron.Minutely);
+                        //scheduler.AddCronJob(() => PrintRemainingTime("CommitChanges", scheduler.GetRemaningTimeToNextRun("CommitChanges")), Cron.Minutely);
 
                         ShowPrompt();
                     }
@@ -48,6 +74,11 @@ namespace AutoGit.Console
             });
 
             cmdLineApp.Execute(args);
+        }
+
+        public static void PrintRemainingTime(string job, TimeSpan time)
+        {
+            WriteLine($"{time:g} to next {job} run.");
         }
 
         private static void ShowPrompt()
