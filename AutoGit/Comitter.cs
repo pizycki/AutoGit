@@ -44,7 +44,12 @@ namespace AutoGit
                 Commands.Stage(repo, "*");
                 var message = CreateMessage();
                 var signature = CreateSignature();
-                repo.Commit(message, signature, signature);
+                try
+                {
+                    repo.Commit(message, signature, signature);
+                    Console.WriteLine("Comitted!");
+                }
+                catch (EmptyCommitException) { }
             }
         }
 

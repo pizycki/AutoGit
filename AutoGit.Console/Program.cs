@@ -38,30 +38,15 @@ namespace AutoGit.Console
 
                 Func<int> fun = () =>
                 {
-                    if (!sourceOpt.HasValue())
-                    {
-                        cmd.Error.WriteLine("Path to repository is required.");
-                        return ExitCodes.Failure;
-                    }
-
+                    if (!TryGetOptionValue(sourceOpt, cmd, "Path to repository is required.", out var source)) return ExitCodes.Failure;
+                    if (!TryGetOptionValue(userNameOpt, cmd, "User name is required.", out var username)) return ExitCodes.Failure;
+                    if (!TryGetOptionValue(userEmailOpt, cmd, "User email is required.", out var email)) return ExitCodes.Failure;
                     // TODO figure out how to retrieve user from .gitconfig
-                    if (!userNameOpt.HasValue())
-                    {
-                        cmd.Error.WriteLine("Username is required.");
-                    }
 
-                    if (!userEmailOpt.HasValue())
-                    {
-                        cmd.Error.WriteLine("Username is required.");
-                    }
-
-                    var author = new GitUser(userNameOpt.Value(), userEmailOpt.Value());
-                    var repository = new GitRepositorySettings(sourceOpt.Value(), author);
-                    var comitter = new Comitter(repository);
                     using (var scheduler = Scheduler.Create())
                     {
-                        scheduler.AddCronJob(() => comitter.CommitChanges(), Cron.Minutely);
-                        //scheduler.AddCronJob(() => PrintRemainingTime("CommitChanges", scheduler.GetRemaningTimeToNextRun("CommitChanges")), Cron.Minutely);
+                        scheduler.AddCronJob(() => CommitAll(username, email, source), Cron.Minutely);
+                        scheduler.AddCronJob(() => PrintRemainingTime(nameof(CommitAll), scheduler.GetRemaningTimeToNextRun(nameof(CommitAll))), Cron.Minutely);
 
                         ShowPrompt();
                     }
@@ -74,6 +59,29 @@ namespace AutoGit.Console
             });
 
             cmdLineApp.Execute(args);
+        }
+
+        public static bool TryGetOptionValue(CommandOption option, CommandLineApplication cmd, string error, out string value)
+        {
+            if (option.HasValue())
+            {
+                value = option.Value();
+                return true;
+            }
+            else
+            {
+                cmd.Error.WriteLine(error);
+                value = null;
+                return false;
+            }
+        }
+
+        public static void CommitAll(string name, string email, string source)
+        {
+            var author = new GitUser(name, email);
+            var repository = new GitRepositorySettings(source, author);
+            var comitter = new Comitter(repository);
+            comitter.CommitChanges();
         }
 
         public static void PrintRemainingTime(string job, TimeSpan time)
