@@ -46,6 +46,7 @@ namespace AutoGit.Console
                             cron: () => MinuteInterval(5));
 
                         scheduler.AddCronJob(
+                            // ReSharper disable once AccessToDisposedClosure
                             methodCall: () => PrintRemainingTime(nameof(CommitAll), scheduler),
                             cron: () => MinuteInterval(1));
 
@@ -80,7 +81,7 @@ namespace AutoGit.Console
         public static void CommitAll(string name, string email, string source)
         {
             var author = new GitUser(name, email);
-            var repository = new GitRepositorySettings(source, author);
+            var repository = new RepositorySettings(source, author);
             var comitter = new Comitter(repository);
             comitter.CommitChanges();
         }

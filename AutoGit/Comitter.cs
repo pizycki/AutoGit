@@ -5,9 +5,9 @@ using static System.Console;
 
 namespace AutoGit
 {
-    public class GitRepositorySettings
+    public class RepositorySettings
     {
-        public GitRepositorySettings(string repositoryPath, GitUser user)
+        public RepositorySettings(string repositoryPath, GitUser user)
         {
             User = user;
             RepositoryPath = repositoryPath;
@@ -31,9 +31,9 @@ namespace AutoGit
 
     public class Comitter : IComitter
     {
-        private readonly GitRepositorySettings _repositorySettings;
+        private readonly RepositorySettings _repositorySettings;
 
-        public Comitter(GitRepositorySettings repositorySettings)
+        public Comitter(RepositorySettings repositorySettings)
         {
             _repositorySettings = repositorySettings;
         }
