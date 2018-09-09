@@ -1,4 +1,7 @@
 # AutoGit
+[![NuGet](https://img.shields.io/nuget/v/dotnet-AutoGit.svg?style=flat-square)](https://www.nuget.org/packages/dotnet-AutoGit/)
+[![NuGet](https://img.shields.io/nuget/dt/dotnet-AutoGit.svg?style=flat-square)](https://www.nuget.org/packages/dotnet-AutoGit/)
+
 
 ## Goal
 Create tool that will commit changes in git repository for every set period of time.
