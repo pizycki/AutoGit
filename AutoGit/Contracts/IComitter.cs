@@ -1,4 +1,4 @@
-﻿namespace AutoGit.Contracts
+﻿namespace AutoGit.Core.Contracts
 {
     public interface IComitter
     {

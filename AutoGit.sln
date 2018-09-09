@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoGit.Console", "AutoGit.Console\AutoGit.Console.csproj", "{62DA7DD1-31FA-4B7D-B481-7454D00956B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-AutoGit", "AutoGit.Console\dotnet-AutoGit.csproj", "{62DA7DD1-31FA-4B7D-B481-7454D00956B0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D75D4D59-4CA5-4837-BA78-62C08E72D80C}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoGit", "AutoGit\AutoGit.csproj", "{C62669C5-1E52-4197-B858-785A9CD0ED82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoGit.Core", "AutoGit\AutoGit.Core.csproj", "{C62669C5-1E52-4197-B858-785A9CD0ED82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

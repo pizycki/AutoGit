@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace AutoGit.Contracts
+namespace AutoGit.Core.Contracts
 {
     public interface IScheduler
     {

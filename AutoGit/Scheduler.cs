@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq.Expressions;
-using AutoGit.Contracts;
+using AutoGit.Core.Contracts;
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Hangfire.Storage;
 
-namespace AutoGit
+namespace AutoGit.Core
 {
     public class Scheduler : IDisposable, IScheduler
     {

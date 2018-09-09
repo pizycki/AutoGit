@@ -1,9 +1,8 @@
 ﻿using System;
-using AutoGit.Contracts;
+using AutoGit.Core.Contracts;
 using LibGit2Sharp;
-using static System.Console;
 
-namespace AutoGit
+namespace AutoGit.Core
 {
     public class RepositorySettings
     {
@@ -48,11 +47,11 @@ namespace AutoGit
                 try
                 {
                     repo.Commit(message, signature, signature);
-                    WriteLine("Changes comitted successfully.");
+                    Console.WriteLine("Changes comitted successfully.");
                 }
                 catch (EmptyCommitException)
                 {
-                    WriteLine("Nothing to commit, carry on.");
+                    Console.WriteLine("Nothing to commit, carry on.");
                 }
             }
         }

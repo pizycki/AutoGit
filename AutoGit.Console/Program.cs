@@ -1,10 +1,11 @@
 using System;
+using AutoGit.Core;
 using Microsoft.Extensions.CommandLineUtils;
 using static System.Console;
 using static Hangfire.Cron;
 // ReSharper disable MemberCanBePrivate.Global
 
-namespace AutoGit.Console
+namespace AutoGit.DotNet
 {
     class Program
     {
