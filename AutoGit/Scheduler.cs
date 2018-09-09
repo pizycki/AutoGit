@@ -21,15 +21,16 @@ namespace AutoGit
             RecurringJob.AddOrUpdate(methodCall, cron);
         }
 
-        public TimeSpan GetRemaningTimeToNextRun(string jobName)
+        public TimeSpan GetTimeToNextRun(string jobName)
         {
             using (var connection = JobStorage.Current.GetConnection())
             {
-                var job = connection.GetRecurringJobs().Find(j => j.Id.Contains(jobName));
+                var recurringJobs = connection.GetRecurringJobs();
+                var job = recurringJobs.Find(j => j.Id.Contains(jobName));
 
                 if (job.NextExecution.HasValue)
                 {
-                    return DateTime.Now - job.NextExecution.Value;
+                    return DateTime.UtcNow - job.NextExecution.Value;
                 }
 
                 return default;

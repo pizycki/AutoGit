@@ -1,7 +1,7 @@
 using System;
-using Hangfire;
 using Microsoft.Extensions.CommandLineUtils;
 using static System.Console;
+using static Hangfire.Cron;
 
 namespace AutoGit.Console
 {
@@ -11,11 +11,6 @@ namespace AutoGit.Console
         {
             public const int Success = 0;
             public const int Failure = 1;
-        }
-
-        static class Crons
-        {
-            public static Func<string> Every2Mins = () => "*/2 * * * *";
         }
 
         static void Main(string[] args)
@@ -28,25 +23,30 @@ namespace AutoGit.Console
                                            "Path to directory Git repository root",
                                            CommandOptionType.SingleValue);
 
-                var userNameOpt = cmd.Option("-un | --username",
+                var usernameOpt = cmd.Option("-un | --username",
                                              "Name of author which will pasted into commit.",
                                              CommandOptionType.SingleValue);
 
-                var userEmailOpt = cmd.Option("-ue | --email",
-                                              "Author email",
-                                              CommandOptionType.SingleValue);
+                var emailOpt = cmd.Option("-ue | --email",
+                                          "Author email",
+                                          CommandOptionType.SingleValue);
 
                 Func<int> fun = () =>
                 {
                     if (!TryGetOptionValue(sourceOpt, cmd, "Path to repository is required.", out var source)) return ExitCodes.Failure;
-                    if (!TryGetOptionValue(userNameOpt, cmd, "User name is required.", out var username)) return ExitCodes.Failure;
-                    if (!TryGetOptionValue(userEmailOpt, cmd, "User email is required.", out var email)) return ExitCodes.Failure;
+                    if (!TryGetOptionValue(usernameOpt, cmd, "User name is required.", out var username)) return ExitCodes.Failure;
+                    if (!TryGetOptionValue(emailOpt, cmd, "User email is required.", out var email)) return ExitCodes.Failure;
                     // TODO figure out how to retrieve user from .gitconfig
 
                     using (var scheduler = Scheduler.Create())
                     {
-                        scheduler.AddCronJob(() => CommitAll(username, email, source), Cron.Minutely);
-                        scheduler.AddCronJob(() => PrintRemainingTime(nameof(CommitAll), scheduler.GetRemaningTimeToNextRun(nameof(CommitAll))), Cron.Minutely);
+                        scheduler.AddCronJob(
+                            methodCall: () => CommitAll(username, email, source),
+                            cron:       () => MinuteInterval(5));
+
+                        scheduler.AddCronJob(
+                            methodCall: () => PrintRemainingTime(nameof(CommitAll), scheduler),
+                            cron:       () => MinuteInterval(1));
 
                         ShowPrompt();
                     }
@@ -84,9 +84,10 @@ namespace AutoGit.Console
             comitter.CommitChanges();
         }
 
-        public static void PrintRemainingTime(string job, TimeSpan time)
+        public static void PrintRemainingTime(string jobMethodName, Scheduler scheduler)
         {
-            WriteLine($"{time:g} to next {job} run.");
+            var time = scheduler.GetTimeToNextRun(jobMethodName);
+            WriteLine($"{time:g} to next {jobMethodName} run.");
         }
 
         private static void ShowPrompt()
