@@ -30,7 +30,7 @@ namespace AutoGit
 
                 if (job.NextExecution.HasValue)
                 {
-                    return DateTime.UtcNow - job.NextExecution.Value;
+                    return (DateTime.UtcNow - job.NextExecution.Value).Negate();
                 }
 
                 return default;

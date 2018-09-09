@@ -2,6 +2,7 @@ using System;
 using Microsoft.Extensions.CommandLineUtils;
 using static System.Console;
 using static Hangfire.Cron;
+// ReSharper disable MemberCanBePrivate.Global
 
 namespace AutoGit.Console
 {
@@ -42,11 +43,11 @@ namespace AutoGit.Console
                     {
                         scheduler.AddCronJob(
                             methodCall: () => CommitAll(username, email, source),
-                            cron:       () => MinuteInterval(5));
+                            cron: () => MinuteInterval(5));
 
                         scheduler.AddCronJob(
                             methodCall: () => PrintRemainingTime(nameof(CommitAll), scheduler),
-                            cron:       () => MinuteInterval(1));
+                            cron: () => MinuteInterval(1));
 
                         ShowPrompt();
                     }
@@ -87,16 +88,15 @@ namespace AutoGit.Console
         public static void PrintRemainingTime(string jobMethodName, Scheduler scheduler)
         {
             var time = scheduler.GetTimeToNextRun(jobMethodName);
-            WriteLine($"{time:g} to next {jobMethodName} run.");
+            WriteLine($"{time:m\\:ss} minutes to next {jobMethodName} run.");
         }
 
         private static void ShowPrompt()
         {
             WriteLine("AutoGit is running");
             WriteLine("Press any key to exit.");
+            WriteLine("======================");
             ReadKey();
         }
-
-        public static void SayHi() => WriteLine("Hi!");
     }
 }
