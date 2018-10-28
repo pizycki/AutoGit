@@ -14,13 +14,19 @@ namespace AutoGit.DotNet
             public const int Success = 0;
             public const int Failure = 1;
         }
-
+        
         static void Main(string[] args)
         {
+            var helpPattern = "-?|-h|--help";
+
             var cmdLineApp = new CommandLineApplication();
+            cmdLineApp.HelpOption(helpPattern);
 
             cmdLineApp.Command("start", cmd =>
             {
+                // TODO  You can (but shouldnt) set another HelpOption on cmdLineApp - the unit test would be nice here
+                cmd.HelpOption(helpPattern);
+
                 var sourceOpt = cmd.Option("-s | --src",
                                            "Path to directory Git repository root",
                                            CommandOptionType.SingleValue);
