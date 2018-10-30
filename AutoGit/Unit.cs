@@ -6,14 +6,10 @@ namespace AutoGit.Core
     {
         public static Unit Value => new Unit();
 
-    }
-
-    public static class UnitHelper
-    {
-        public static Unit SideEffect(this Unit unit, Action action)
+        public static Unit SideEffect(Action action)
         {
             action();
-            return unit;
+            return Unit.Value;
         }
     }
 }

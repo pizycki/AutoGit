@@ -17,7 +17,7 @@ namespace AutoGit.Core
         }
 
         public Unit AddCronJob(Expression<Action> methodCall, Func<string> cron) => 
-            Unit.Value.SideEffect(() => RecurringJob.AddOrUpdate(methodCall, cron));
+            Unit.SideEffect(() => RecurringJob.AddOrUpdate(methodCall, cron));
 
         public TimeSpan GetTimeToNextRun(string jobName)
         {

@@ -10,7 +10,8 @@
     <PackageIconUrl />
     <RepositoryUrl>https://github.com/pizycki/AutoGit</RepositoryUrl>
     <PackageTags>git</PackageTags>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
