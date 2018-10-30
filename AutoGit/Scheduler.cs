@@ -16,10 +16,8 @@ namespace AutoGit.Core
             _server = new BackgroundJobServer();
         }
 
-        public void AddCronJob(Expression<Action> methodCall, Func<string> cron)
-        {
-            RecurringJob.AddOrUpdate(methodCall, cron);
-        }
+        public Unit AddCronJob(Expression<Action> methodCall, Func<string> cron) => 
+            Unit.Value.SideEffect(() => RecurringJob.AddOrUpdate(methodCall, cron));
 
         public TimeSpan GetTimeToNextRun(string jobName)
         {
