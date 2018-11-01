@@ -6,6 +6,7 @@ using Hangfire;
 using Microsoft.Extensions.CommandLineUtils;
 using Optional;
 using Optional.Linq;
+using static System.Convert;
 using static AutoGit.DotNet.FuncExtensions;
 
 namespace AutoGit.DotNet
@@ -31,7 +32,8 @@ namespace AutoGit.DotNet
             var username = CmdOptions.UserName.GetValue().WithException<Failure>("User name is required.");
             var email = CmdOptions.Email.GetValue().WithException<Failure>("User email is required.");
             var source = CmdOptions.Source.GetValue().WithException<Failure>("Path to repository is required.");
-            var commitInterval = CmdOptions.CommitInterval.GetValue(Convert.ToInt32).ValueOr(() => 5);
+            var commitInterval = CmdOptions.CommitInterval.GetValue(ToInt32).ValueOr(() => 5);
+            var push = CmdOptions.Push.GetValue(ToBoolean).ValueOr(() => false);
 
             // TODO figure out how to retrieve user from .gitconfig
 
@@ -39,15 +41,17 @@ namespace AutoGit.DotNet
             {
                 var jobs = new List<Option<Func<Unit>, Failure>>
                 {
-                    StartCommitJob(username, email, source, commitInterval, scheduler),
+                    StartCommitJob(username, email, source, commitInterval, scheduler, push),
                 };
 
                 var fails = jobs.Where(j => !j.HasValue);
                 if (fails.Any())
                 {
-                    var _ = fails.Select(fail => Unit.SideEffect(
-                            () => fail.MatchNone(err => Console.WriteLine(err.Message))))
-                        .ToList();
+                    var _ = fails.Select(fail => 
+                        Unit.SideEffect(() =>
+                        {
+                            fail.MatchNone(err => Console.WriteLine(err.Message));
+                        })).ToList();
                     return ExitCodes.Failure;
                 }
 
@@ -60,14 +64,14 @@ namespace AutoGit.DotNet
 
         }
 
-        private static Option<Func<Unit>, Failure> StartCommitJob(Option<string, Failure> username, Option<string, Failure> email, Option<string, Failure> source, int commitInterval, Scheduler scheduler) =>
+        private static Option<Func<Unit>, Failure> StartCommitJob(Option<string, Failure> username, Option<string, Failure> email, Option<string, Failure> source, int commitInterval, Scheduler scheduler, bool push) =>
             from un in username
             from ue in email
             from src in source
             select func(() => Unit.SideEffect(() =>
             {
                 scheduler.AddCronJob(
-                    methodCall: () => CommitAll(un, ue, src),
+                    methodCall: () => CommitAll(un, ue, src, push),
                     cron: () => Cron.MinuteInterval(commitInterval));
 
                 scheduler.AddCronJob(
@@ -76,13 +80,18 @@ namespace AutoGit.DotNet
                     cron: () => Cron.MinuteInterval(1));
             }));
 
-        public static Unit CommitAll(string name, string email, string source) =>
+        public static Unit CommitAll(string name, string email, string source, bool push) =>
             Unit.SideEffect(() =>
             {
                 var author = new GitUser(name, email);
                 var repository = new RepositorySettings(source, author);
                 var comitter = new Comitter(repository);
                 comitter.CommitChanges();
+
+                if (push)
+                {
+                    // TODO
+                }
             });
 
         public static void PrintRemainingTime(string jobMethodName, Scheduler scheduler) =>
