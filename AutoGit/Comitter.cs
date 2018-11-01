@@ -1,66 +1,31 @@
 ﻿using System;
-using AutoGit.Core.Contracts;
-using LibGit2Sharp;
+using System.Diagnostics;
 
 namespace AutoGit.Core
 {
-    public class RepositorySettings
+    public static class Git
     {
-        public RepositorySettings(string repositoryPath, GitUser user)
-        {
-            User = user;
-            RepositoryPath = repositoryPath;
-        }
+        private static GitCommand StageAllCommand => CreateCommand("add --all");
+        private static GitCommand CommitCommand => CreateCommand($"commit --message {CreateMessage(DateTime.Now)}");
 
-        public string RepositoryPath { get; }
-        public GitUser User { get; }
-    }
-
-    public class GitUser
-    {
-        public string Name { get; }
-        public string Email { get; }
-
-        public GitUser(string name, string email)
-        {
-            Name = name;
-            Email = email;
-        }
-    }
-
-    public class Comitter : IComitter
-    {
-        private readonly RepositorySettings _repositorySettings;
-
-        public Comitter(RepositorySettings repositorySettings)
-        {
-            _repositorySettings = repositorySettings;
-        }
-
-        public void CommitChanges()
-        {
-            using (var repo = new Repository(_repositorySettings.RepositoryPath))
+        private static GitCommand CreateCommand(string args) => new GitCommand(
+            new Process
             {
-                Commands.Stage(repo, "*");
-                var message = CreateMessage();
-                var signature = CreateSignature();
-                try
-                {
-                    repo.Commit(message, signature, signature);
-                    Console.WriteLine("Changes comitted successfully.");
-                }
-                catch (EmptyCommitException)
-                {
-                    Console.WriteLine("Nothing to commit, carry on.");
-                }
-            }
+                StartInfo = new ProcessStartInfo("git", args)
+            });
+
+        private static string CreateMessage(DateTime commitTime) => $"AutoGit - {commitTime:dd/MM/yyyy hh:mm}";
+    }
+
+    public class GitCommand
+    {
+        private readonly Process _process;
+
+        public GitCommand(Process process)
+        {
+            _process = process;
         }
 
-        private static string CreateMessage() => $"AutoGit - {DateTime.Now:dd/MM/yyyy hh:mm}";
-
-        private Signature CreateSignature() =>
-            new Signature(_repositorySettings.User.Name,
-                          _repositorySettings.User.Email,
-                          DateTimeOffset.Now);
+        public Unit Go() => Unit.SideEffect(() => _process.Start());
     }
 }
