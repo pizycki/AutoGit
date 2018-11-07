@@ -7,17 +7,21 @@ namespace Process
     {
         static void Main(string[] args)
         {
-            var path = @"E:\dev\gitauto-test-repo";
+            var path = @"C:\dev\test-repo";
 
             var proc = new System.Diagnostics.Process()
             {
-                StartInfo = new ProcessStartInfo("git", $"-C {path} log")
+                StartInfo = new ProcessStartInfo("git", "status")
                 {
 
                 }
             };
 
             proc.Start();
+
+            proc.Start();
+
+            Console.WriteLine("bla");
 
             Console.ReadKey();
         }

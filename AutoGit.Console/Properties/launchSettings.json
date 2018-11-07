@@ -2,7 +2,7 @@
   "profiles": {
     "AutoGit.Console": {
       "commandName": "Project",
-      "commandLineArgs": "start -s E:\\dev\\gitauto-test-repo -un \"Gordon Freeman\" -ue \"gordon.freeman@hl2.nova\""
+      "commandLineArgs": "start -r C:\\dev\\test-repo"
     }
   }
 }
