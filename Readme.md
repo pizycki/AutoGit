@@ -12,7 +12,7 @@ Make sure you have [.NET Core SDK](https://www.microsoft.com/net/download) insta
 
 Then go to repository directory you'd like to start work on and type
 ```
-dotnet install --tool-path tools dotnet-AutoGit
+dotnet tool install --tool-path tools dotnet-AutoGit
 ```
 
 This will add AutoGit to your project as a tool.
