@@ -36,7 +36,7 @@ dotnet tool update --global dotnet-AutoGit
 Once you have AutoGit installed you can start auto-commit loop
 
 ```
-dotnet-autogit
+AutoGit
 ```
 
 The default configuration will stage and commit all of your changes every minute.
@@ -44,12 +44,12 @@ The default configuration will stage and commit all of your changes every minute
 #### Configure
 To see configuration options type
 ```
-dotnet-autogit --help
+AutoGit --help
 ```
 
 Here is an example
 ```
-dotnet-autogit --directory E:\dev\repo --interval 5 --push
+AutoGit --directory E:\dev\repo --interval 5 --push
 ```
 
 This will start auto-commit loop in `E:\dev\repo` Git repository with interval of 5 minutes and with pushing to remote after commiting all changes.
