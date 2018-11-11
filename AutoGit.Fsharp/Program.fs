@@ -2,31 +2,51 @@
 open Argu
 open System.Diagnostics
 
+module Common = 
+    let timespanMiliseconds (ts:TimeSpan):int = int ts.TotalMilliseconds
+
+open Common
+module Process =
+
+    type ProcessExec = string
+    type ProcessExecArgs = string
+    type ProcessWithArgs = ProcessExec * ProcessExecArgs 
+
+    let runnableProcess (data : ProcessWithArgs) =
+        (fun () -> 
+            use p = new Process()
+            p.StartInfo <- ProcessStartInfo(fst data, snd data)
+            p.Start() |> ignore
+            p.WaitForExit();
+            ())
+        
+
+open Process
 module Git =
-    
-    type GitArgName = string
-    type GitArgValue = string
-    type GitArg = GitArgName * GitArgValue
-    type GitRepository = string  
 
-    let directoryArg (repo:GitRepository option): GitArg option =
-        match repo with
-        | Some r -> Some ("-C", r)
-        | _ -> None
-    
-//    let commitAll 
+    type GitRepository = string
 
-    let printStatus () =
-        use p = new Process()
-        p.StartInfo <- ProcessStartInfo("git", "status")
-        p.Start() |> ignore
-        ()   
+    let commit (message:string) : ProcessWithArgs = 
+        ("git", String.Format("commit -m \"{0}\"", message))
+
+    let status : ProcessWithArgs =
+        ("git", "status")
+
+    let stageAll : ProcessWithArgs = 
+        ("git", "add -A")
+
+    let push : ProcessWithArgs =
+        ("git", "push")
+
+    let inDirectory (proc : ProcessWithArgs) (dir : GitRepository) : ProcessWithArgs = 
+        let args = "-C " + dir + " " + (snd proc)
+        (fst proc, args)
 
 open Git
 module AutoGit =
     type Arguments =
         | Interval of int
-        | Directory of dir:string
+        | Directory of string
         | Push of bool
     with
         interface IArgParserTemplate with
@@ -36,13 +56,13 @@ module AutoGit =
                 | Directory _ -> "Path to Git repository directory"
                 | Push _ -> "Pushes changes to remote with each commit"
     
-    type CommitInterval = TimeSpan  
+    type CommitInterval = TimeSpan
 
-    type AutoCommitArguments = {
-        Interval: CommitInterval
-        Repository: GitRepository option
-        Push: bool
-    }
+    let setRepository (cmds : ProcessWithArgs list) (dir : GitRepository) : ProcessWithArgs list = 
+        List.map (fun x -> inDirectory x dir) cmds
+         
+    let runnableCommands (cmds : ProcessWithArgs list) =
+        List.map runnableProcess cmds
 
     let loop interval work =
         while true do
@@ -52,18 +72,6 @@ module AutoGit =
             }
             Async.RunSynchronously async
 
-    let convert (args:AutoCommitArguments) = 
-        let gitArgs = [
-            directoryArg args.Repository;
-        ]
-
-        let f a = 
-            match a with 
-            | Some x -> [fst x; snd x]
-            | None -> []
-
-        List.collect f gitArgs
-
 open AutoGit
 [<EntryPoint>]
 let main argv =
@@ -71,16 +79,30 @@ let main argv =
     let parser = ArgumentParser.Create<Arguments>(programName = "ls", errorHandler = errorHandler)     
     let results = parser.ParseCommandLine argv
 
-    let interval = match results.TryGetResult<@Arguments.Interval@> with Some v -> v | None -> 3600
+    let interval = match results.TryGetResult<@Arguments.Interval@> with Some v -> v | None -> 1 |> (float) |> TimeSpan.FromMinutes |> timespanMiliseconds
     let repository = results.TryGetResult<@Directory@> 
     let push = match results.TryGetResult<@Arguments.Push@> with Some v -> v | None -> false
     
-    let commitArgs = {
-        Interval = TimeSpan.FromSeconds (float interval);
-        Repository = repository;
-        Push = push
-    }
+    let commitMessage = "AutoGit - " + System.DateTime.Now.ToShortTimeString()
 
-    printfn "Bla %A" (convert commitArgs |> List.toArray)
+    let mutable cmds = [
+        Git.stageAll;
+        Git.commit commitMessage
+    ]
+
+    if push then cmds <- List.append cmds [Git.push]
+
+    match repository with
+    | Some r -> cmds <- setRepository cmds r
+    | None -> ()    
+
+    // Print Git Status once
+    Git.status |> runnableProcess |> (fun p -> p())
+
+    let work () =
+        runnableCommands cmds |> List.iter (fun c -> c())
+    
+    // Start loop
+    AutoGit.loop interval work
 
     0 // return an integer exit code
