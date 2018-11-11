@@ -3,24 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-AutoGit", "AutoGit.Console\dotnet-AutoGit.csproj", "{62DA7DD1-31FA-4B7D-B481-7454D00956B0}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D75D4D59-4CA5-4837-BA78-62C08E72D80C}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoGit.Core", "AutoGit\AutoGit.Core.csproj", "{C62669C5-1E52-4197-B858-785A9CD0ED82}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutoGit.Tests", "AutoGit.Tests\AutoGit.Tests.csproj", "{08C4C284-6500-440D-84D9-1924CDEA0935}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Process", "Process\Process.csproj", "{A66C3ABC-1E5D-4F09-9E10-008C48E7109A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Csharp", "Csharp", "{1EB07264-5410-458D-9E90-0EEAB61A6F0B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fsharp", "Fsharp", "{98D381E8-818A-43F5-A7A8-51C2978C7EF9}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "AutoGit.Fsharp", "AutoGit.Fsharp\AutoGit.Fsharp.fsproj", "{53322801-C0E4-4B8E-9BE5-0094F1763330}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "AutoGit.Fsharp", "AutoGit.Fsharp\AutoGit.Fsharp.fsproj", "{53322801-C0E4-4B8E-9BE5-0094F1763330}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,22 +16,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{62DA7DD1-31FA-4B7D-B481-7454D00956B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62DA7DD1-31FA-4B7D-B481-7454D00956B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62DA7DD1-31FA-4B7D-B481-7454D00956B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62DA7DD1-31FA-4B7D-B481-7454D00956B0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C62669C5-1E52-4197-B858-785A9CD0ED82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C62669C5-1E52-4197-B858-785A9CD0ED82}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C62669C5-1E52-4197-B858-785A9CD0ED82}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C62669C5-1E52-4197-B858-785A9CD0ED82}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08C4C284-6500-440D-84D9-1924CDEA0935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08C4C284-6500-440D-84D9-1924CDEA0935}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08C4C284-6500-440D-84D9-1924CDEA0935}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08C4C284-6500-440D-84D9-1924CDEA0935}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A66C3ABC-1E5D-4F09-9E10-008C48E7109A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A66C3ABC-1E5D-4F09-9E10-008C48E7109A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A66C3ABC-1E5D-4F09-9E10-008C48E7109A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A66C3ABC-1E5D-4F09-9E10-008C48E7109A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{53322801-C0E4-4B8E-9BE5-0094F1763330}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{53322801-C0E4-4B8E-9BE5-0094F1763330}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53322801-C0E4-4B8E-9BE5-0094F1763330}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,13 +23,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{62DA7DD1-31FA-4B7D-B481-7454D00956B0} = {1EB07264-5410-458D-9E90-0EEAB61A6F0B}
-		{C62669C5-1E52-4197-B858-785A9CD0ED82} = {1EB07264-5410-458D-9E90-0EEAB61A6F0B}
-		{08C4C284-6500-440D-84D9-1924CDEA0935} = {1EB07264-5410-458D-9E90-0EEAB61A6F0B}
-		{A66C3ABC-1E5D-4F09-9E10-008C48E7109A} = {1EB07264-5410-458D-9E90-0EEAB61A6F0B}
-		{53322801-C0E4-4B8E-9BE5-0094F1763330} = {98D381E8-818A-43F5-A7A8-51C2978C7EF9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E4F9E859-D7F1-44E4-B015-CCB2CA73D4CC}

@@ -6,6 +6,7 @@ module Common =
     let timespanMiliseconds (ts:TimeSpan):int = int ts.TotalMilliseconds
 
 open Common
+
 module Process =
 
     type ProcessExec = string
@@ -20,8 +21,8 @@ module Process =
             p.WaitForExit();
             ())
         
-
 open Process
+
 module Git =
 
     type GitRepository = string
@@ -43,6 +44,7 @@ module Git =
         (fst proc, args)
 
 open Git
+
 module AutoGit =
     type Arguments =
         | Interval of int
@@ -73,6 +75,7 @@ module AutoGit =
             Async.RunSynchronously async
 
 open AutoGit
+
 [<EntryPoint>]
 let main argv =
     let errorHandler = ProcessExiter(colorizer = function ErrorCode.HelpText -> None | _ -> Some ConsoleColor.Red)

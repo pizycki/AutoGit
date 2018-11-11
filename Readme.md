@@ -6,25 +6,6 @@
 ## Goal
 Create tool that will commit changes in git repository for every set period of time.
 
-## Libs
-* Hangfire with Memory Storage
-* Some UI framework (later)
-* M$ Command line extensions
-* https://github.com/libgit2/libgit2sharp For Git
-
-## Links
-https://discuss.hangfire.io/t/console-dashboard/192
-
-## Ideas
-* as dotnet tool
-* args
-  * --gui
-  * --src
-  * --cron
-  * --push
-  * global/local modes
-
-
 ## Install
 
 Make sure you have [.NET Core SDK](https://www.microsoft.com/net/download) installed.
@@ -48,34 +29,28 @@ That way it'll be easier to keep up with the latest version of AutoGit. For upda
 dotnet tool update --global dotnet-AutoGit
 ```
 
-> You can also update tool installed only in your project
+> You can also update AutoGit installed in your project only
 
 ## How to use
 
-#### List all available commands
+Once you have AutoGit installed you can start auto-commit loop
+
+```
+dotnet-autogit
+```
+
+The default configuration will stage and commit all of your changes every minute.
+
+#### Configure
+To see configuration options type
 ```
 dotnet-autogit --help
 ```
-Though `-h` or `-?` will also work
 
-This will print all available commands (under the label `commands`) you can run.
-
-On each command you can invoke `--help` for more details what this command does.
-
-This will print `start` command details
+Here is an example
 ```
-dotnet-autogit start --help
+dotnet-autogit --directory E:\dev\repo --interval 5 --push
 ```
 
-#### Start auto committing
+This will start auto-commit loop in `E:\dev\repo` Git repository with interval of 5 minutes and with pushing to remote after commiting all changes.
 
-`start` command allows to [cron](https://en.wikipedia.org/wiki/Cron) set up an job which will stage and commit all of your changes in the repository.
-
-Each commit will have message contaning time when it was made.
-```
-PS> dotnet-autogit start --src E:\dev\your-fav-repo ` 
-                         --username "Gordon Freeman" `
-                         --email "gordon.freeman@hl2.nova"
-```
-
-TODO Add demo gif
