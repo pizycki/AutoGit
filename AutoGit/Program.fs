@@ -27,8 +27,8 @@ module Git =
 
     type GitRepository = string
 
-    let commit (message:string) : ProcessWithArgs = 
-        ("git", String.Format("commit -m \"{0}\"", message))
+    let commit (message:(_ -> string)) : ProcessWithArgs = 
+        ("git", String.Format("commit -m \"{0}\"", message()))
 
     let status : ProcessWithArgs =
         ("git", "status")
@@ -86,7 +86,7 @@ let main argv =
     let repository = results.TryGetResult<@Directory@> 
     let push = match results.TryGetResult<@Arguments.Push@> with Some v -> v | None -> false
     
-    let commitMessage = "AutoGit - " + System.DateTime.Now.ToShortTimeString()
+    let commitMessage = fun () -> "AutoGit - " + System.DateTime.Now.ToShortTimeString()
 
     let mutable cmds = [
         Git.stageAll;
