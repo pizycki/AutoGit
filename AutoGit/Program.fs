@@ -1,5 +1,5 @@
-﻿open System
-open Argu
+﻿open Argu
+open System
 open System.Diagnostics
 
 module Common = 
@@ -10,16 +10,26 @@ open Common
 module Process =
 
     type ProcessExec = string
-    type ProcessExecArgs = string
-    type ProcessWithArgs = ProcessExec * ProcessExecArgs 
+
+    type ProcessExecArgsProvider = unit -> string
+    type ProcessExecArgs =
+        | Args of string
+        | ArgsProvider of ProcessExecArgsProvider
+
+    type ProcessWithArgs = ProcessExec * ProcessExecArgs
 
     let runnableProcess (data : ProcessWithArgs) =
-        (fun () -> 
+        fun () -> 
+            let proc = fst data
+            let args = match snd data with
+                       | Args s -> s
+                       | ArgsProvider f -> f()
+
             use p = new Process()
-            p.StartInfo <- ProcessStartInfo(fst data, snd data)
+            p.StartInfo <- ProcessStartInfo(proc, args)
             p.Start() |> ignore
             p.WaitForExit();
-            ())
+            ()
         
 open Process
 
@@ -27,20 +37,27 @@ module Git =
 
     type GitRepository = string
 
+    let gitProc args : ProcessWithArgs = ("git", args)
+
     let commit (message:(_ -> string)) : ProcessWithArgs = 
-        ("git", String.Format("commit -m \"{0}\"", message()))
+        let provider () = String.Format("commit -m \"{0}\"", message())
+        ("git", ArgsProvider provider)
 
     let status : ProcessWithArgs =
-        ("git", "status")
+        ("git", Args "status")
 
     let stageAll : ProcessWithArgs = 
-        ("git", "add -A")
+        ("git", Args "add -A")
 
     let push : ProcessWithArgs =
-        ("git", "push")
+        ("git", Args "push")
 
-    let inDirectory (proc : ProcessWithArgs) (dir : GitRepository) : ProcessWithArgs = 
-        let args = "-C " + dir + " " + (snd proc)
+    let inDirectory (proc : ProcessWithArgs) (dir : GitRepository) : ProcessWithArgs =
+        let args: ProcessExecArgs = 
+            match (snd proc) with
+            | Args a -> Args ("-C " + dir + " " + a)
+            | ArgsProvider f -> ArgsProvider (fun () -> ("-C " + dir + " " + f()))
+
         (fst proc, args)
 
 open Git
@@ -82,8 +99,18 @@ let main argv =
     let parser = ArgumentParser.Create<Arguments>(programName = "ls", errorHandler = errorHandler)     
     let results = parser.ParseCommandLine argv
 
-    let interval = match results.TryGetResult<@Arguments.Interval@> with Some v -> v | None -> 1 |> (float) |> TimeSpan.FromMinutes |> timespanMiliseconds
-    let repository = results.TryGetResult<@Directory@> 
+    let interval = 
+        match results.TryGetResult<@Arguments.Interval@> with 
+        | Some argInterval -> 
+            printfn "AutoGit will commit changes every %d minute(s)." argInterval
+            argInterval |> (float) |> TimeSpan.FromMinutes |> timespanMiliseconds
+        | None -> 
+            let defaultIntervalInMinutes = 1
+            printfn "No interval set. AutoGit will commit changes every %d minute(s)." defaultIntervalInMinutes
+            defaultIntervalInMinutes |> (float) |> TimeSpan.FromMinutes |> timespanMiliseconds            
+            
+            
+    let repository = results.TryGetResult<@Directory@>
     let push = match results.TryGetResult<@Arguments.Push@> with Some v -> v | None -> false
     
     let commitMessage = fun () -> "AutoGit - " + System.DateTime.Now.ToShortTimeString()
@@ -99,10 +126,20 @@ let main argv =
     | Some r -> cmds <- setRepository cmds r
     | None -> ()    
 
+    printfn "Commands to run"
+    for cmd in cmds do
+        let proc = fst cmd
+        let args = match snd cmd with
+                   | Args a -> a
+                   | ArgsProvider f -> f()
+        printfn "%s %s" proc args
+
     // Print Git Status once
-    Git.status |> runnableProcess |> (fun p -> p())
+    //Git.status |> runnableProcess |> (fun p -> p())
 
     let work () =
+        let time = DateTime.Now.ToShortTimeString()
+        printfn "Time: %s" time
         runnableCommands cmds |> List.iter (fun c -> c())
     
     // Start loop
