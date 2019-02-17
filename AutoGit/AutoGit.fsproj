@@ -1,29 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <PackageId>dotnet-AutoGit</PackageId>
-    <Version>1.2.3</Version>
-    <Authors>Paweł Iżycki</Authors>
-    <Company>Paweł Iżycki</Company>
-    <Product>AutoGit</Product>
-    <PackageTags>git</PackageTags>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/pizycki/AutoGit</RepositoryUrl>
-    <Copyright />
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackAsTool>true</PackAsTool>
-    <AssemblyVersion>1.2.3.0</AssemblyVersion>
   </PropertyGroup>
-
   <ItemGroup>
+    <Compile Include="Common.fs" />
+    <Compile Include="Process.fs" />
+    <Compile Include="Git.fs" />
+    <Compile Include="AutoGit.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Argu" Version="5.1.0" />
   </ItemGroup>
-
 </Project>
